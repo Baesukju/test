@@ -11,7 +11,7 @@ jobs:
   build-and-deploy-backend:
     runs-on: ubuntu-latest
     env:
-      DATE_TAG: dev-${{ github.run_id }}-$(date +%Y%m%d%H%M)
+      DATE_TAG: dev-${{ github.run_id }}-${{ github.sha }}
 
     steps:
       - name: Checkout code
