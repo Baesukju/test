@@ -15,7 +15,7 @@ function App() {
         {imageUrl ? (
           <img src={imageUrl} alt="animal" style={{ width: '300px' }} />
         ) : (
-          <p>Loading image...</p>
+          <p>Loading image........</p>
         )}
         <p>
           Edit <code>src/App.js</code> and save to reload.
