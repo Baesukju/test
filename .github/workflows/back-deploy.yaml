@@ -38,6 +38,21 @@ jobs:
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/backend:${DATE_TAG} -t ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest .
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/backend:${DATE_TAG}
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest
+    
+      - name: Deploy via Bastion Host
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.DEV_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          port: 2022
+          key: ${{ secrets.EC2_SSH_KEY }}        
+          proxy_host: ${{ secrets.BASTION_HOST }} 
+          proxy_username: ${{ secrets.EC2_USERNAME }}
+          proxy_key: ${{ secrets.EC2_SSH_KEY }} 
+          script: |
+            cd ~/test
+            docker compose pull
+            docker compose up -d
 
       - name: Discord Notification
         uses: Ilshidur/action-discord@master
