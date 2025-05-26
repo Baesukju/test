@@ -34,13 +34,13 @@ public class HomeController {
         return "<h1>마사이 마라 국립 야생 동물원</h1>";
     }
 
-    @GetMapping("/images")
+    @GetMapping("/api/images")
     @ResponseBody
     public Map<String, List<Image>> getAllImages() {
         return Map.of("info", imageMapper.findAll());
     }
 
-    @GetMapping("/images2")
+    @GetMapping("/api/images2")
     @ResponseBody
     public Map<String, List<Image2>> getAllImages2() {
         return Map.of("info", imageRepository.findAll());
@@ -55,7 +55,7 @@ public class HomeController {
         return Map.of("url", image.getUrl());
     }   
 
-    @GetMapping("/animal2")
+    @GetMapping("/api/animal2")
     public String getRandomAnimal2(Model model) throws UnknownHostException {
         long randomId = (long) (Math.random() * 12 + 1);
         Optional<Image2> image = imageRepository.findById(randomId);

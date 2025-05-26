@@ -58,6 +58,7 @@ jobs:
             ./deploy.sh backend
 
       - name: Discord Notification
+        if: success()
         uses: Ilshidur/action-discord@master
         with:
           args: "✅ [BACKEND] 이미지 푸시 완료: `${{ env.DATE_TAG }}`"
