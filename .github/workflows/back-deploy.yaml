@@ -33,11 +33,15 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build & Push Backend Docker Image
-        working-directory: ./backend
-        run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/backend:${DATE_TAG} -t ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest .
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/backend:${DATE_TAG}
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/backend:${{ env.DATE_TAG }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest
     
       - name: Deploy via Bastion Host
         uses: appleboy/ssh-action@v0.1.6
@@ -51,8 +55,9 @@ jobs:
           proxy_key: ${{ secrets.EC2_SSH_KEY }} 
           script: |
             cd ~/test
+            docker compose down
             docker compose pull
-            docker compose up -d
+            docker compose up -d --build
 
       - name: Discord Notification
         uses: Ilshidur/action-discord@master

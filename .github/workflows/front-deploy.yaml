@@ -27,11 +27,15 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build & Push Frontend Docker Image
-        working-directory: ./frontend
-        run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/frontend:${DATE_TAG} -t ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest .
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/frontend:${DATE_TAG}
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          file: ./frontend/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/frontend:${{ env.DATE_TAG }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest
 
       - name: Discord Notification
         uses: Ilshidur/action-discord@master
@@ -52,6 +56,8 @@ jobs:
           proxy_key: ${{ secrets.EC2_SSH_KEY }} # Bastion용 키
           script: |
             cd ~/test
+            docker compose down
             docker compose pull
-            docker compose up -d
+            docker compose up -d --build
+
 

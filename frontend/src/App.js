@@ -5,8 +5,7 @@ function App() {
   const [imageUrl, setImageUrl] = useState('');
 
   useEffect(() => {
-    // 이미지 경로 설정
-    setImageUrl('/api/animal');
+  setImageUrl('/api/animal'); // nginx에서 /api -> backend로 프록시됨
   }, []);
 
   return (
