@@ -55,4 +55,5 @@ jobs:
           proxy_username: ${{ secrets.EC2_USERNAME }}
           proxy_key: ${{ secrets.EC2_SSH_KEY }} # Bastion용 키
           script: |
+            cd ~/test
             ./deploy.sh frontend
