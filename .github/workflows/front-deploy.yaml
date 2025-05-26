@@ -55,9 +55,4 @@ jobs:
           proxy_username: ${{ secrets.EC2_USERNAME }}
           proxy_key: ${{ secrets.EC2_SSH_KEY }} # Bastion용 키
           script: |
-            cd ~/test
-            docker compose down
-            docker compose pull
-            docker compose up -d --build
-
-
+            ./deploy.sh frontend

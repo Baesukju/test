@@ -5,7 +5,11 @@ function App() {
   const [imageUrl, setImageUrl] = useState('');
 
   useEffect(() => {
-  setImageUrl('/api/animal'); // nginx에서 /api -> backend로 프록시됨
+  fetch('/api/animal')
+    .then(res => res.json())
+    .then(data => {
+      setImageUrl(data.url);
+    });
   }, []);
 
   return (

@@ -55,9 +55,7 @@ jobs:
           proxy_key: ${{ secrets.EC2_SSH_KEY }} 
           script: |
             cd ~/test
-            docker compose down
-            docker compose pull
-            docker compose up -d --build
+            ./deploy.sh backend
 
       - name: Discord Notification
         uses: Ilshidur/action-discord@master

@@ -46,16 +46,14 @@ public class HomeController {
         return Map.of("info", imageRepository.findAll());
     }
 
-    @GetMapping("/animal")
-    public String getRandomAnimal(Model model) throws UnknownHostException {
+    @GetMapping("/api/animal")
+    @ResponseBody
+    public Map<String, String> getRandomAnimalImageUrl() {
         long randomId = (long) (Math.random() * 12 + 1);
         Image image = imageMapper.findById(randomId);
 
-        model.addAttribute("url", image.getUrl());
-        model.addAttribute("hostname", InetAddress.getLocalHost().getHostName());
-
-        return "index";
-    }
+        return Map.of("url", image.getUrl());
+    }   
 
     @GetMapping("/animal2")
     public String getRandomAnimal2(Model model) throws UnknownHostException {
