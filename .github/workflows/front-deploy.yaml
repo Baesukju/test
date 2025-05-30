@@ -53,7 +53,7 @@ jobs:
         with:
           host: ${{ secrets.FRONT_HOST }}         
           username: ${{ secrets.EC2_USERNAME }}
-          port: ${{ secrets.FRONT_PORT }}
+          port: 2022
           key: ${{ secrets.EC2_SSH_KEY }}
           proxy_host: ${{ secrets.BASTION_HOST }}
           proxy_username: ${{ secrets.EC2_USERNAME }}
