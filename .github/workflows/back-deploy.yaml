@@ -52,13 +52,13 @@ jobs:
         with:
           host: ${{ secrets.BACK_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
-          port: 2022                        
+          port: "2022"                        
           key: ${{ secrets.EC2_SSH_KEY }}
 
           proxy_host: ${{ secrets.BASTION_HOST }}
           proxy_username: ${{ secrets.EC2_USERNAME }}
           proxy_key: ${{ secrets.EC2_SSH_KEY }}
-          proxy_port: 22                    
+          proxy_port: "22"                    
 
           script: |
             set -e
