@@ -1,4 +1,4 @@
-name: Backend CI/CD
+name: Back CI/CD
 
 on:
   push:
@@ -9,13 +9,14 @@ on:
 
 jobs:
   build-and-deploy-backend:
-    runs-on: ubuntu-latest
-    env:
-      DATE_TAG: dev-${{ github.run_id }}-${{ github.sha }}
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Set DATE_TAG
+        run: echo "DATE_TAG=dev-$(date +%Y%m%d-%H%M)" >> $GITHUB_ENV
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3
@@ -23,7 +24,7 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Set up Docker Buildx
+      - name: Set up Docker Build
         uses: docker/setup-buildx-action@v2
 
       - name: Log in to Docker Hub
@@ -37,30 +38,34 @@ jobs:
         with:
           context: ./backend
           file: ./backend/Dockerfile
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/arm64
           push: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/backend:${{ env.DATE_TAG }}
             ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest
+
     
       - name: Deploy via Bastion Host
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ secrets.DEV_HOST }}
+          host: ${{ secrets.BACK_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
-          port: 2022
+          port: ${{ secrets.BACK_PORT }}
           key: ${{ secrets.EC2_SSH_KEY }}        
           proxy_host: ${{ secrets.BASTION_HOST }} 
           proxy_username: ${{ secrets.EC2_USERNAME }}
           proxy_key: ${{ secrets.EC2_SSH_KEY }} 
           script: |
-            cd ~/test
-            ./deploy.sh backend
+            set -e
+            cd ~/back
+            ./deploy.sh
 
       - name: Discord Notification
         if: success()
         uses: Ilshidur/action-discord@master
         with:
-          args: "✅ [BACKEND] 이미지 푸시 완료: `${{ env.DATE_TAG }}`"
+          args: "✅ [BACK] 이미지 푸시 완료: `${{ env.DATE_TAG }}`"
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
