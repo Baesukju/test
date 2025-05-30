@@ -10,7 +10,7 @@ RUN npm run build
 
 # 실행 단계
 FROM --platform=linux/arm64 nginx:alpine
-COPY --from=build /build/static /usr/share/nginx/html
+COPY --from=build ./build/static /usr/share/nginx/html
 COPY ./nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 80
